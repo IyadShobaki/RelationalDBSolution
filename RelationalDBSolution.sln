@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SQLServerUI", "SQLServerUI\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataAccessLibrary", "DataAccessLibrary\DataAccessLibrary.csproj", "{9D237590-E7B6-4387-9CB2-655F77134AE0}"
 EndProject
+Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "SQLContactsDB", "SQLContactsDB\SQLContactsDB.sqlproj", "{EFB4E880-5C24-432E-B990-D51D08E6AD45}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,12 @@ Global
 		{9D237590-E7B6-4387-9CB2-655F77134AE0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9D237590-E7B6-4387-9CB2-655F77134AE0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9D237590-E7B6-4387-9CB2-655F77134AE0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EFB4E880-5C24-432E-B990-D51D08E6AD45}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EFB4E880-5C24-432E-B990-D51D08E6AD45}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EFB4E880-5C24-432E-B990-D51D08E6AD45}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{EFB4E880-5C24-432E-B990-D51D08E6AD45}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EFB4E880-5C24-432E-B990-D51D08E6AD45}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EFB4E880-5C24-432E-B990-D51D08E6AD45}.Release|Any CPU.Deploy.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
