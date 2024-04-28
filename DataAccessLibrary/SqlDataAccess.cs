@@ -29,7 +29,7 @@ namespace DataAccessLibrary
       // Insert operation  // We can use it for delete and update as well passing parameters
       public void SaveData<T>(string sqlStatement, T parameters, string connectionString)
       {
-         using (IDbConnection connection = new SqlConnection(sqlStatement))
+         using (IDbConnection connection = new SqlConnection(connectionString))
          {
             connection.Execute(sqlStatement, parameters);
          }

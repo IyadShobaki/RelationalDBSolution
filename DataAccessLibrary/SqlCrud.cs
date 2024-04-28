@@ -51,5 +51,100 @@ namespace DataAccessLibrary
 
          return output;
       }
+
+      public void CreateContact(FullContactModel contact)
+      {
+         // Save to multiple tables
+         // Save the basic contact (First name and last name)
+
+
+         string sql = "insert into dbo.Contacts (FirstName, LastName) values (@FirstName, @LastName);";
+         db.SaveData(sql,
+                      new { contact.BasicInfo.FirstName, contact.BasicInfo.LastName },
+                      _connectionString);
+         // Get the ID number of the contact
+
+         sql = "select Id from dbo.Contacts where FirstName = @FirstName and LastName = @LastName;";
+
+         int contactId = db.LoadData<IdLookupModel, dynamic>(sql,
+                                                      new { contact.BasicInfo.FirstName, contact.BasicInfo.LastName },
+                                                      _connectionString).First().Id;
+
+
+         foreach (var phoneNumber in contact.PhoneNumbers)
+         {
+            // If the phone number is not exist in PhoneNumbers table 
+            if (phoneNumber.Id == 0)
+            {
+               sql = "insert into dbo.PhoneNumbers (PhoneNumber) values (@PhoneNumber);";
+               db.SaveData(sql, new { phoneNumber.PhoneNumber }, _connectionString);
+
+
+               sql = "select Id from dbo.PhoneNumbers where PhoneNumber = @PhoneNumber;";
+               phoneNumber.Id = db.LoadData<IdLookupModel, dynamic>(sql,
+                                                                    new { phoneNumber.PhoneNumber },
+                                                                    _connectionString).First().Id;
+            }
+            // If the phone number exist or not exist in PhoneNumbers table
+            // Insert into the link table for that number
+            sql = "insert into dbo.ContactPhoneNumbers (ContactId, PhoneNumberId) values (@ContactId, @PhoneNumberId);";
+
+            db.SaveData(sql, new { ContactId = contactId, PhoneNumberId = phoneNumber.Id }, _connectionString);
+         }
+
+         foreach (var email in contact.EmailAddresses)
+         {
+            // If the phone number is not exist in PhoneNumbers table 
+            if (email.Id == 0)
+            {
+               sql = "insert into dbo.EmailAddresses (EmailAddress) values (@EmailAddress);";
+               db.SaveData(sql, new { email.EmailAddress }, _connectionString);
+
+               sql = "select Id from dbo.EmailAddresses where EmailAddress = @EmailAddress;";
+               email.Id = db.LoadData<IdLookupModel, dynamic>(sql,
+                                                                    new { email.EmailAddress },
+                                                                    _connectionString).First().Id;
+            }
+            // If the phone number exist or not exist in PhoneNumbers table
+            // Insert into the link table for that number
+            sql = "insert into dbo.ContactEmail (ContactId, EmailAddressId) values (@ContactId, @EmailAddressId);";
+
+            db.SaveData(sql, new { ContactId = contactId, EmailAddressId = email.Id }, _connectionString);
+         }
+
+      }
+
+
+      public void UpdateContactName(BasicContactModel contact)
+      {
+         string sql = "update dbo.Contacts set FirstName = @FirstName, LastName = @LastName where Id = @Id;";
+
+         db.SaveData(sql, contact, _connectionString);
+
+      }
+
+      public void RemovePhoneNumberFromContact(int contactId, int phoneNumberId)
+      {
+         // Find all of the usages of the phone number id
+         //      if 1, then delete link and phone number
+         //      if > 1, then delete link for contact
+
+         string sql = "select Id, ContactId, PhoneNumberId from dbo.ContactPhoneNumbers where PhoneNumberId = @PhoneNumberId;";
+
+         var links = db.LoadData<ContactPhoneNumberModel, dynamic>(sql,
+                                                                   new { PhoneNumberId = phoneNumberId },
+                                                                   _connectionString);
+
+         sql = "delete from dbo.ContactPhoneNumbers where PhoneNumberId = @PhoneNumberId and ContactId = @ContactId;";
+
+         db.SaveData(sql, new { PhoneNumberId = phoneNumberId, ContactId = contactId }, _connectionString);
+
+         if (links.Count == 1)
+         {
+            sql = "delete from dbo.PhoneNumbers where Id = @PhoneNumberId;";
+            db.SaveData(sql, new { PhoneNumberId = phoneNumberId }, _connectionString);
+         }
+
+      }
    }
 }
